@@ -1,0 +1,24 @@
+{
+  "experiment_id": "eval_main_val_with_nf",
+  "geom_checkpoint": "studies/runs/geom_polar_ablation_pairwise/best_geom_polar_transformer.pt",
+  "corr_checkpoint": "studies/runs/polar_corr_on_ablation_pairwise/best_polar_correction.pt",
+  "n_val": 1178,
+  "n_params_transformer": 4470,
+  "mae_transformer": {
+    "cl": 0.07460885494947433,
+    "cd": 0.008913773111999035,
+    "ld": 6.011573791503906
+  },
+  "mae_corrected": {
+    "cl": 0.040388528257608414,
+    "cd": 0.008075868710875511,
+    "ld": 4.879601001739502
+  },
+  "mae_neuralfoil": {
+    "cl": 0.5241504907608032,
+    "cd": 0.0185393076390028,
+    "ld": 29.93208885192871
+  },
+  "inference_ms_per_airfoil": 0.35399490667361583,
+  "wall_time_sec": 0.41700600006151944
+}

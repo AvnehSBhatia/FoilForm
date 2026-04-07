@@ -1,0 +1,7 @@
+{
+  "decode_append_median_ms_cpu": 5.907833459787071,
+  "neuralfoil_xxxlarge_median_ms_cpu": 1.4968120376579463,
+  "n_params_transformer": 4470,
+  "airfoil_index": 0,
+  "xfoil": "binary_present_not_benchmarked"
+}

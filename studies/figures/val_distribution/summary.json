@@ -1,0 +1,7 @@
+{
+  "n_val": 1178,
+  "median_mae_cl_tfm": 0.06636182239486112,
+  "median_mae_cd_tfm": 0.007997862645424902,
+  "median_mae_cl_corr": 0.03380356297000415,
+  "median_mae_cd_corr": 0.007157163384060064
+}

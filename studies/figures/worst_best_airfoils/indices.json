@@ -1,0 +1,246 @@
+{
+  "worst": [
+    {
+      "global_index": 649,
+      "rank": 0,
+      "thickness_span": 0.34091895818710327,
+      "camber_proxy": 0.23006099462509155
+    },
+    {
+      "global_index": 2141,
+      "rank": 1,
+      "thickness_span": 0.1672741323709488,
+      "camber_proxy": 0.03642846643924713
+    },
+    {
+      "global_index": 2190,
+      "rank": 2,
+      "thickness_span": 0.23552437126636505,
+      "camber_proxy": 0.10049071162939072
+    },
+    {
+      "global_index": 1877,
+      "rank": 3,
+      "thickness_span": 0.17180415987968445,
+      "camber_proxy": 0.08200185745954514
+    },
+    {
+      "global_index": 316,
+      "rank": 4,
+      "thickness_span": 0.28800126910209656,
+      "camber_proxy": 0.1715085804462433
+    },
+    {
+      "global_index": 1117,
+      "rank": 5,
+      "thickness_span": 0.040101490914821625,
+      "camber_proxy": 0.027013558894395828
+    },
+    {
+      "global_index": 1857,
+      "rank": 6,
+      "thickness_span": 0.28800126910209656,
+      "camber_proxy": 0.1715085804462433
+    },
+    {
+      "global_index": 1531,
+      "rank": 7,
+      "thickness_span": 0.09995591640472412,
+      "camber_proxy": 0.01210051029920578
+    },
+    {
+      "global_index": 1532,
+      "rank": 8,
+      "thickness_span": 0.1052669882774353,
+      "camber_proxy": 0.016004078090190887
+    },
+    {
+      "global_index": 1267,
+      "rank": 9,
+      "thickness_span": 0.15259511768817902,
+      "camber_proxy": 0.06512797623872757
+    },
+    {
+      "global_index": 328,
+      "rank": 10,
+      "thickness_span": 0.1642429381608963,
+      "camber_proxy": 0.07595560699701309
+    },
+    {
+      "global_index": 358,
+      "rank": 11,
+      "thickness_span": 0.17180415987968445,
+      "camber_proxy": 0.08200185745954514
+    },
+    {
+      "global_index": 1788,
+      "rank": 12,
+      "thickness_span": 0.38791799545288086,
+      "camber_proxy": 0.2478886991739273
+    },
+    {
+      "global_index": 2513,
+      "rank": 13,
+      "thickness_span": 0.1026390790939331,
+      "camber_proxy": 0.05752779170870781
+    },
+    {
+      "global_index": 629,
+      "rank": 14,
+      "thickness_span": 0.23552437126636505,
+      "camber_proxy": 0.10049036145210266
+    },
+    {
+      "global_index": 1786,
+      "rank": 15,
+      "thickness_span": 0.32312747836112976,
+      "camber_proxy": 0.20151473581790924
+    },
+    {
+      "global_index": 2051,
+      "rank": 16,
+      "thickness_span": 0.12282529473304749,
+      "camber_proxy": 0.0609905868768692
+    },
+    {
+      "global_index": 2000,
+      "rank": 17,
+      "thickness_span": 0.19894728064537048,
+      "camber_proxy": 0.1043979823589325
+    },
+    {
+      "global_index": 439,
+      "rank": 18,
+      "thickness_span": 0.19894728064537048,
+      "camber_proxy": 0.1043979823589325
+    },
+    {
+      "global_index": 1569,
+      "rank": 19,
+      "thickness_span": 0.17234189808368683,
+      "camber_proxy": 0.08381704986095428
+    }
+  ],
+  "best": [
+    {
+      "global_index": 1465,
+      "rank": 0,
+      "thickness_span": 0.07908213138580322,
+      "camber_proxy": 0.047522783279418945
+    },
+    {
+      "global_index": 1634,
+      "rank": 1,
+      "thickness_span": 0.11628735810518265,
+      "camber_proxy": 0.07238024473190308
+    },
+    {
+      "global_index": 264,
+      "rank": 2,
+      "thickness_span": 0.16584929823875427,
+      "camber_proxy": 0.09772617369890213
+    },
+    {
+      "global_index": 1051,
+      "rank": 3,
+      "thickness_span": 0.1829376518726349,
+      "camber_proxy": 0.12113162875175476
+    },
+    {
+      "global_index": 1508,
+      "rank": 4,
+      "thickness_span": 0.1344006061553955,
+      "camber_proxy": 0.091273732483387
+    },
+    {
+      "global_index": 1252,
+      "rank": 5,
+      "thickness_span": 0.1798221915960312,
+      "camber_proxy": 0.1183665469288826
+    },
+    {
+      "global_index": 204,
+      "rank": 6,
+      "thickness_span": 0.13357239961624146,
+      "camber_proxy": 0.08531935513019562
+    },
+    {
+      "global_index": 2730,
+      "rank": 7,
+      "thickness_span": 0.10003450512886047,
+      "camber_proxy": 0.06591088324785233
+    },
+    {
+      "global_index": 559,
+      "rank": 8,
+      "thickness_span": 0.2669781446456909,
+      "camber_proxy": 0.16125071048736572
+    },
+    {
+      "global_index": 2121,
+      "rank": 9,
+      "thickness_span": 0.26697611808776855,
+      "camber_proxy": 0.16125035285949707
+    },
+    {
+      "global_index": 2886,
+      "rank": 10,
+      "thickness_span": 0.1918461173772812,
+      "camber_proxy": 0.12410137802362442
+    },
+    {
+      "global_index": 2294,
+      "rank": 11,
+      "thickness_span": 0.12013261020183563,
+      "camber_proxy": 0.08173352479934692
+    },
+    {
+      "global_index": 359,
+      "rank": 12,
+      "thickness_span": 0.137116938829422,
+      "camber_proxy": 0.09356780350208282
+    },
+    {
+      "global_index": 2477,
+      "rank": 13,
+      "thickness_span": 0.1201673224568367,
+      "camber_proxy": 0.08931095898151398
+    },
+    {
+      "global_index": 2182,
+      "rank": 14,
+      "thickness_span": 0.2249017357826233,
+      "camber_proxy": 0.14211313426494598
+    },
+    {
+      "global_index": 2067,
+      "rank": 15,
+      "thickness_span": 0.20353412628173828,
+      "camber_proxy": 0.13406144082546234
+    },
+    {
+      "global_index": 695,
+      "rank": 16,
+      "thickness_span": 0.1918804943561554,
+      "camber_proxy": 0.11962718516588211
+    },
+    {
+      "global_index": 256,
+      "rank": 17,
+      "thickness_span": 0.1828598827123642,
+      "camber_proxy": 0.1121278628706932
+    },
+    {
+      "global_index": 2272,
+      "rank": 18,
+      "thickness_span": 0.17141324281692505,
+      "camber_proxy": 0.11345613747835159
+    },
+    {
+      "global_index": 2514,
+      "rank": 19,
+      "thickness_span": 0.10465982556343079,
+      "camber_proxy": 0.07264337688684464
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+[
+  {
+    "run": "geom_polar_ablation_attention_only",
+    "n_params": 1110,
+    "best_val_mse": 0.16920899756644903,
+    "val_mae_cl": 0.07479613274335861,
+    "val_mae_cd": 0.008677948266267776
+  },
+  {
+    "run": "geom_polar_ablation_no_mlp",
+    "n_params": 3286,
+    "best_val_mse": 0.18981341468660454,
+    "val_mae_cl": 0.09553306549787521,
+    "val_mae_cd": 0.008940487168729305
+  },
+  {
+    "run": "geom_polar_ablation_no_pairwise",
+    "n_params": 2294,
+    "best_val_mse": 0.1840496423997377,
+    "val_mae_cl": 0.09042388945817947,
+    "val_mae_cd": 0.008575108833611012
+  },
+  {
+    "run": "geom_polar_ablation_pairwise",
+    "n_params": 4470,
+    "best_val_mse": 0.1689158591784929,
+    "val_mae_cl": 0.07470327615737915,
+    "val_mae_cd": 0.00890354160219431
+  },
+  {
+    "run": "geom_polar_ablation_standard_mlp",
+    "n_params": 2294,
+    "best_val_mse": 0.1840496423997377,
+    "val_mae_cl": 0.09042388945817947,
+    "val_mae_cd": 0.008575108833611012
+  },
+  {
+    "run": "geom_polar_dropout_0_0",
+    "n_params": 4470,
+    "best_val_mse": 0.4911052333681207,
+    "val_mae_cl": 0.19721108675003052,
+    "val_mae_cd": 0.010488745756447315
+  },
+  {
+    "run": "geom_polar_dropout_0_05",
+    "n_params": 4470,
+    "best_val_mse": 0.1689158591784929,
+    "val_mae_cl": 0.07470327615737915,
+    "val_mae_cd": 0.00890354160219431
+  },
+  {
+    "run": "geom_polar_dropout_0_1",
+    "n_params": 4470,
+    "best_val_mse": 0.17443762209854627,
+    "val_mae_cl": 0.07963123172521591,
+    "val_mae_cd": 0.008837624453008175
+  },
+  {
+    "run": "geom_polar_dropout_0_15",
+    "n_params": 4470,
+    "best_val_mse": 0.18024039739056638,
+    "val_mae_cl": 0.08621858805418015,
+    "val_mae_cd": 0.008981729857623577
+  },
+  {
+    "run": "geom_polar_n_layers_1",
+    "n_params": 1326,
+    "best_val_mse": 0.18429030713282132,
+    "val_mae_cl": 0.09230279177427292,
+    "val_mae_cd": 0.008841429837048054
+  },
+  {
+    "run": "geom_polar_n_layers_16",
+    "n_params": 17046,
+    "best_val_mse": 0.17043243074103406,
+    "val_mae_cl": 0.07793040573596954,
+    "val_mae_cd": 0.008845938369631767
+  },
+  {
+    "run": "geom_polar_n_layers_2",
+    "n_params": 2374,
+    "best_val_mse": 0.18922377809097893,
+    "val_mae_cl": 0.09269233047962189,
+    "val_mae_cd": 0.008940439671278
+  },
+  {
+    "run": "geom_polar_n_layers_4",
+    "n_params": 4470,
+    "best_val_mse": 0.1689158591784929,
+    "val_mae_cl": 0.07470327615737915,
+    "val_mae_cd": 0.00890354160219431
+  },
+  {
+    "run": "geom_polar_n_layers_8",
+    "n_params": 8662,
+    "best_val_mse": 0.17714859388376536,
+    "val_mae_cl": 0.08257405459880829,
+    "val_mae_cd": 0.00886969082057476
+  },
+  {
+    "run": "geom_polar_polar_order_reverse",
+    "n_params": 4470,
+    "best_val_mse": 0.16427654380861081,
+    "val_mae_cl": 0.07138088345527649,
+    "val_mae_cd": 0.00868609081953764
+  },
+  {
+    "run": "geom_polar_train_frac_0_4",
+    "n_params": 4470,
+    "best_val_mse": 0.21008361876010895,
+    "val_mae_cl": 0.10530228912830353,
+    "val_mae_cd": 0.009238083846867085
+  },
+  {
+    "run": "geom_polar_train_frac_0_5",
+    "n_params": 4470,
+    "best_val_mse": 0.18928131585319838,
+    "val_mae_cl": 0.08995843678712845,
+    "val_mae_cd": 0.009126921184360981
+  },
+  {
+    "run": "geom_polar_train_frac_0_6",
+    "n_params": 4470,
+    "best_val_mse": 0.1689158591784929,
+    "val_mae_cl": 0.07470327615737915,
+    "val_mae_cd": 0.00890354160219431
+  },
+  {
+    "run": "geom_polar_train_frac_0_7",
+    "n_params": 4470,
+    "best_val_mse": 0.16176941777978623,
+    "val_mae_cl": 0.0664057657122612,
+    "val_mae_cd": 0.008774212561547756
+  },
+  {
+    "run": "geom_polar_train_frac_0_8",
+    "n_params": 4470,
+    "best_val_mse": 0.15611686259508134,
+    "val_mae_cl": 0.06638460606336594,
+    "val_mae_cd": 0.008728818967938423
+  }
+]
