@@ -18,20 +18,14 @@ sys.path.insert(0, str(_REPO / "src"))
 sys.path.insert(0, str(_STUDIES / "src"))
 
 from foilform.checkpoint_utils import load_geom_transformer  # noqa: E402
+from foilform.checkpoints import resolve_geom_polar_transformer, resolve_polar_correction  # noqa: E402
 from foilform.manifest import append_manifest  # noqa: E402
-from foilform.paths import DATA_PROCESSED, RUNS  # noqa: E402
+from foilform.paths import DATA_PROCESSED  # noqa: E402
 from foilform.polar_correction_mlp import (  # noqa: E402
     N_SLOTS,
     POLAR_DIM,
     PolarCorrectionMLP,
 )
-
-
-def find_latest(pattern: str) -> Path | None:
-    if not RUNS.is_dir():
-        return None
-    candidates = list(RUNS.glob(pattern))
-    return max(candidates, key=lambda p: p.stat().st_mtime) if candidates else None
 
 
 def build_targets(polars: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -95,12 +89,17 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--skip_nf", action="store_true")
     parser.add_argument("--compile", action="store_true")
-    parser.add_argument("--geom-checkpoint", type=str, default="", help="Path to best_geom_polar_transformer.pt")
+    parser.add_argument(
+        "--geom-checkpoint",
+        type=str,
+        default="",
+        help="Path to best_geom_polar_transformer.pt (default: models/geom_polar_transformer.pt or latest runs/).",
+    )
     parser.add_argument(
         "--corr-checkpoint",
         type=str,
         default="",
-        help="Path to best_polar_correction.pt (optional; skip corrected metrics if empty).",
+        help="Path to best_polar_correction.pt (optional; default: models/polar_correction.pt or latest runs/).",
     )
     parser.add_argument("--output-json", type=str, default="", help="Write metrics JSON here.")
     parser.add_argument("--experiment-id", type=str, default="eval")
@@ -122,9 +121,16 @@ def main() -> None:
 
     device = resolve_device(args.device)
 
-    geom_ckpt = Path(args.geom_checkpoint) if args.geom_checkpoint else find_latest("*/best_geom_polar_transformer.pt")
+    if args.geom_checkpoint:
+        geom_ckpt = Path(args.geom_checkpoint)
+        if not geom_ckpt.is_file():
+            geom_ckpt = _REPO / args.geom_checkpoint
+    else:
+        geom_ckpt = resolve_geom_polar_transformer()
     if geom_ckpt is None or not geom_ckpt.is_file():
-        raise FileNotFoundError("Pass --geom-checkpoint or train a studies transformer first.")
+        raise FileNotFoundError(
+            "No geom checkpoint: add models/geom_polar_transformer.pt or pass --geom-checkpoint."
+        )
     t_model = load_geom_transformer(geom_ckpt, device)
     if args.compile:
         t_model = torch.compile(t_model)
@@ -138,7 +144,7 @@ def main() -> None:
         if not corr_ckpt.is_file():
             corr_ckpt = _REPO / args.corr_checkpoint
     else:
-        corr_ckpt = find_latest("*/best_polar_correction.pt")
+        corr_ckpt = resolve_polar_correction()
     if corr_ckpt is not None and corr_ckpt.is_file():
         corr_model = PolarCorrectionMLP().to(device)
         corr_model.load_state_dict(

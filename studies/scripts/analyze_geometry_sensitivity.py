@@ -16,7 +16,8 @@ sys.path.insert(0, str(_REPO / "src"))
 sys.path.insert(0, str(_STUDIES / "src"))
 
 from foilform.checkpoint_utils import load_geom_transformer  # noqa: E402
-from foilform.paths import ARTIFACTS, DATA_PROCESSED, FIGURES  # noqa: E402
+from foilform.checkpoints import resolve_geom_polar_transformer, resolve_geom_tokenizer  # noqa: E402
+from foilform.paths import DATA_PROCESSED, FIGURES  # noqa: E402
 from foilform.tokenizer_model import TripletEncoder  # noqa: E402
 
 N_PATCHES = 167
@@ -43,17 +44,32 @@ def encode_geom(enc: TripletEncoder, triplets: np.ndarray, device: torch.device)
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--geom-checkpoint", type=str, required=True)
-    parser.add_argument("--tokenizer", type=str, default="", help="Path to geom_tokenizer.pt")
+    parser.add_argument(
+        "--geom-checkpoint",
+        type=str,
+        default="",
+        help="Path to best_geom_polar_transformer.pt (default: models/geom_polar_transformer.pt or latest runs/).",
+    )
+    parser.add_argument(
+        "--tokenizer",
+        type=str,
+        default="",
+        help="Path to geom_tokenizer.pt (default: models/geom_tokenizer.pt or artifacts/).",
+    )
     parser.add_argument("--airfoil-index", type=int, default=0)
     parser.add_argument("--camber-pct", type=float, default=0.005)
     parser.add_argument("--thickness-pct", type=float, default=0.01)
     parser.add_argument("--device", type=str, default="cpu")
     args = parser.parse_args()
 
-    tok_path = Path(args.tokenizer) if args.tokenizer else ARTIFACTS / "geom_tokenizer.pt"
-    if not tok_path.is_file():
-        print(f"Missing tokenizer {tok_path}; skip geometry sensitivity (train tokenizers first).")
+    if args.tokenizer:
+        tok_path = Path(args.tokenizer)
+        if not tok_path.is_file():
+            tok_path = _REPO / args.tokenizer
+    else:
+        tok_path = resolve_geom_tokenizer()
+    if tok_path is None or not tok_path.is_file():
+        print("Missing geom tokenizer (models/geom_tokenizer.pt or artifacts/geom_tokenizer.pt); train tokenizers first.")
         return
 
     device = torch.device(args.device)
@@ -83,9 +99,16 @@ def main() -> None:
     g_th = pack(c0[0, :, 0], y_th)
     g_cb = pack(c0[0, :, 0], y_cb)
 
-    geom_ckpt = Path(args.geom_checkpoint)
-    if not geom_ckpt.is_file():
-        geom_ckpt = _REPO / args.geom_checkpoint
+    if args.geom_checkpoint:
+        geom_ckpt = Path(args.geom_checkpoint)
+        if not geom_ckpt.is_file():
+            geom_ckpt = _REPO / args.geom_checkpoint
+    else:
+        geom_ckpt = resolve_geom_polar_transformer()
+    if geom_ckpt is None or not geom_ckpt.is_file():
+        raise FileNotFoundError(
+            "No geom checkpoint: add models/geom_polar_transformer.pt or pass --geom-checkpoint."
+        )
     model = load_geom_transformer(geom_ckpt, device)
 
     ncols = polars.shape[1]

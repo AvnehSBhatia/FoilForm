@@ -5,7 +5,7 @@ Sanity check: model predicts Cl, Cd only; the autoregressive chain uses
 
 Usage (from repo root):
   python tests/test_geom_polar_oracle_aoa.py
-  python tests/test_geom_polar_oracle_aoa.py --checkpoint runs/.../best_geom_polar_transformer.pt
+  python tests/test_geom_polar_oracle_aoa.py --checkpoint models/geom_polar_transformer.pt
   python tests/test_geom_polar_oracle_aoa.py --random_init
 """
 
@@ -21,17 +21,9 @@ import torch
 
 _REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO / "src"))
-from foilform.paths import DATA_PROCESSED, RUNS  # noqa: E402
+from foilform.checkpoints import resolve_geom_polar_transformer  # noqa: E402
 from foilform.geom_polar_transformer import GeomPolarTransformer  # noqa: E402
-
-
-def find_latest_best_checkpoint() -> Path | None:
-    if not RUNS.is_dir():
-        return None
-    candidates = list(RUNS.glob("*/best_geom_polar_transformer.pt"))
-    if not candidates:
-        return None
-    return max(candidates, key=lambda p: p.stat().st_mtime)
+from foilform.paths import DATA_PROCESSED  # noqa: E402
 
 
 def airfoil_train_val_mask(n_airfoils: int, train_frac: float, seed: int) -> tuple[np.ndarray, np.ndarray]:
@@ -92,7 +84,7 @@ def main() -> None:
         "--checkpoint",
         type=str,
         default="",
-        help="Path to best_geom_polar_transformer.pt. If empty, uses newest runs/*/best_geom_polar_transformer.pt.",
+        help="Path to checkpoint. If empty, uses models/geom_polar_transformer.pt or newest runs/*/best_geom_polar_transformer.pt.",
     )
     parser.add_argument(
         "--random_init",
@@ -145,7 +137,7 @@ def main() -> None:
         if not ckpt_path.is_file():
             ckpt_path = _REPO / args.checkpoint
     else:
-        ckpt_path = find_latest_best_checkpoint()
+        ckpt_path = resolve_geom_polar_transformer()
 
     if ckpt_path is not None and ckpt_path.is_file() and not args.random_init:
         state = torch.load(ckpt_path, map_location=device, weights_only=False)
@@ -154,7 +146,7 @@ def main() -> None:
     elif not args.random_init and args.checkpoint and ckpt_path is not None and not ckpt_path.is_file():
         raise SystemExit(f"Checkpoint not found: {args.checkpoint}")
     elif not args.random_init and ckpt_path is None:
-        print("No runs/*/best_geom_polar_transformer.pt found — using random weights.")
+        print("No models/geom_polar_transformer.pt or runs/*/best_geom_polar_transformer.pt — using random weights.")
 
     model.eval()
     n_samples = geom_s.shape[0]

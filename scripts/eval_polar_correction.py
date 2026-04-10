@@ -13,8 +13,9 @@ import torch
 
 _REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO / "src"))
+from foilform.checkpoints import resolve_geom_polar_transformer, resolve_polar_correction  # noqa: E402
 from foilform.geom_polar_transformer import GeomPolarTransformer  # noqa: E402
-from foilform.paths import DATA_PROCESSED, RUNS  # noqa: E402
+from foilform.paths import DATA_PROCESSED  # noqa: E402
 from foilform.polar_correction_mlp import (  # noqa: E402
     GEOM_STATIONS,
     N_SLOTS,
@@ -31,13 +32,6 @@ def infer_transformer_n_layers(state_dict: dict) -> int:
             if len(parts) >= 2 and parts[1].isdigit():
                 mx = max(mx, int(parts[1]))
     return mx + 1 if mx >= 0 else 8
-
-
-def find_latest(pattern: str) -> Path | None:
-    if not RUNS.is_dir():
-        return None
-    candidates = list(RUNS.glob(pattern))
-    return max(candidates, key=lambda p: p.stat().st_mtime) if candidates else None
 
 
 def build_targets(polars: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -123,10 +117,12 @@ def main() -> None:
 
     device = resolve_device(args.device)
 
-    # --- Load models ---
-    geom_ckpt = find_latest("*/best_geom_polar_transformer.pt")
+    # --- Load models (prefer models/geom_polar_transformer.pt) ---
+    geom_ckpt = resolve_geom_polar_transformer()
     if geom_ckpt is None:
-        raise FileNotFoundError("No transformer checkpoint found")
+        raise FileNotFoundError(
+            "No transformer checkpoint: add models/geom_polar_transformer.pt or train under runs/"
+        )
     sd = torch.load(geom_ckpt, map_location=device, weights_only=False)
     nl = infer_transformer_n_layers(sd["model"])
     t_model = GeomPolarTransformer(n_layers=nl).to(device)
@@ -138,9 +134,11 @@ def main() -> None:
     else:
         print(f"Transformer: {geom_ckpt.parent.name} (n_layers={nl})")
 
-    corr_ckpt = find_latest("*/best_polar_correction.pt")
+    corr_ckpt = resolve_polar_correction()
     if corr_ckpt is None:
-        raise FileNotFoundError("No correction MLP checkpoint found")
+        raise FileNotFoundError(
+            "No correction MLP checkpoint: add models/polar_correction.pt or train under runs/"
+        )
     corr_model = PolarCorrectionMLP().to(device)
     corr_model.load_state_dict(
         torch.load(corr_ckpt, map_location=device, weights_only=False)["model"], strict=True

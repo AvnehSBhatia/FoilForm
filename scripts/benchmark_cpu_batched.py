@@ -19,8 +19,9 @@ import torch
 
 _REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO / "src"))
+from foilform.checkpoints import resolve_geom_polar_transformer, resolve_polar_correction  # noqa: E402
 from foilform.geom_polar_transformer import GeomPolarTransformer  # noqa: E402
-from foilform.paths import DATA_PROCESSED, RUNS  # noqa: E402
+from foilform.paths import DATA_PROCESSED  # noqa: E402
 from foilform.polar_correction_mlp import N_SLOTS, POLAR_DIM, PolarCorrectionMLP  # noqa: E402
 
 
@@ -48,13 +49,6 @@ def infer_transformer_n_layers(state_dict: dict) -> int:
             if len(parts) >= 2 and parts[1].isdigit():
                 mx = max(mx, int(parts[1]))
     return mx + 1 if mx >= 0 else 8
-
-
-def find_latest(pattern: str) -> Path | None:
-    if not RUNS.is_dir():
-        return None
-    candidates = list(RUNS.glob(pattern))
-    return max(candidates, key=lambda p: p.stat().st_mtime) if candidates else None
 
 
 def build_targets(polars: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -191,10 +185,12 @@ def main() -> None:
     bench_idx = np.tile(val_idx, rep)[:need]
 
     device = resolve_device(args.device)
-    geom_ckpt = find_latest("*/best_geom_polar_transformer.pt")
-    corr_ckpt = find_latest("*/best_polar_correction.pt")
+    geom_ckpt = resolve_geom_polar_transformer()
+    corr_ckpt = resolve_polar_correction()
     if geom_ckpt is None or corr_ckpt is None:
-        raise FileNotFoundError("Missing transformer or correction checkpoint under runs/")
+        raise FileNotFoundError(
+            "Missing transformer or correction weights: add models/*.pt or train under runs/"
+        )
 
     sd = torch.load(geom_ckpt, map_location=device, weights_only=False)
     nl = infer_transformer_n_layers(sd["model"])

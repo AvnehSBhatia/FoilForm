@@ -12,17 +12,9 @@ import torch
 
 _REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO / "src"))
-from foilform.paths import DATA_PROCESSED, FIGURES, RUNS, ensure_dirs  # noqa: E402
+from foilform.checkpoints import resolve_geom_polar_transformer  # noqa: E402
 from foilform.geom_polar_transformer import GeomPolarTransformer  # noqa: E402
-
-
-def find_latest_best_checkpoint() -> Path | None:
-    if not RUNS.is_dir():
-        return None
-    candidates = list(RUNS.glob("*/best_geom_polar_transformer.pt"))
-    if not candidates:
-        return None
-    return max(candidates, key=lambda p: p.stat().st_mtime)
+from foilform.paths import DATA_PROCESSED, FIGURES, ensure_dirs  # noqa: E402
 
 
 def build_targets(polars: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -101,7 +93,7 @@ def main() -> None:
         if not ckpt.is_file():
             ckpt = _REPO / args.checkpoint
     else:
-        ckpt = find_latest_best_checkpoint()
+        ckpt = resolve_geom_polar_transformer()
     if ckpt is not None and ckpt.is_file():
         state = torch.load(ckpt, map_location=device, weights_only=False)
         model.load_state_dict(state["model"], strict=True)

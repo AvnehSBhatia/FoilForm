@@ -17,8 +17,9 @@ from tqdm.auto import tqdm
 
 _REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO / "src"))
+from foilform.checkpoints import resolve_geom_polar_transformer  # noqa: E402
 from foilform.geom_polar_transformer import GeomPolarTransformer  # noqa: E402
-from foilform.paths import DATA_PROCESSED, RUNS, ensure_dirs  # noqa: E402
+from foilform.paths import DATA_PROCESSED, ensure_dirs  # noqa: E402
 from foilform.polar_correction_mlp import (  # noqa: E402
     EXPECTED_PARAMETER_COUNT,
     GEOM_STATIONS,
@@ -107,15 +108,6 @@ def infer_transformer_n_layers(state_dict: dict) -> int:
             if len(parts) >= 2 and parts[1].isdigit():
                 mx = max(mx, int(parts[1]))
     return mx + 1 if mx >= 0 else 8
-
-
-def find_latest_geom_checkpoint() -> Path | None:
-    if not RUNS.is_dir():
-        return None
-    candidates = list(RUNS.glob("*/best_geom_polar_transformer.pt"))
-    if not candidates:
-        return None
-    return max(candidates, key=lambda p: p.stat().st_mtime)
 
 
 @torch.no_grad()
@@ -224,7 +216,7 @@ def main() -> None:
         "--geom_checkpoint",
         type=str,
         default="",
-        help="Transformer checkpoint to generate base predictions. Auto-finds latest if empty.",
+        help="Transformer checkpoint to generate base predictions. Auto-finds models/geom_polar_transformer.pt or latest runs/ if empty.",
     )
     args = parser.parse_args()
 
@@ -254,10 +246,10 @@ def main() -> None:
         if not geom_ckpt.is_file():
             geom_ckpt = _REPO / args.geom_checkpoint
     else:
-        geom_ckpt = find_latest_geom_checkpoint()
+        geom_ckpt = resolve_geom_polar_transformer()
     if geom_ckpt is None or not geom_ckpt.is_file():
         raise FileNotFoundError(
-            "No transformer checkpoint found. Train one first or pass --geom_checkpoint."
+            "No transformer checkpoint: add models/geom_polar_transformer.pt or train under runs/, or pass --geom_checkpoint."
         )
 
     print(f"Generating base predictions from transformer: {geom_ckpt}")

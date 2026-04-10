@@ -12,8 +12,9 @@ import torch
 
 _REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO / "src"))
+from foilform.checkpoints import resolve_geom_polar_transformer, resolve_polar_correction  # noqa: E402
 from foilform.geom_polar_transformer import GeomPolarTransformer, N_LAYERS  # noqa: E402
-from foilform.paths import DATA_PROCESSED, FIGURES, RUNS, ensure_dirs  # noqa: E402
+from foilform.paths import DATA_PROCESSED, FIGURES, ensure_dirs  # noqa: E402
 from foilform.polar_correction_mlp import GEOM_STATIONS, N_SLOTS, POLAR_DIM, PolarCorrectionMLP  # noqa: E402
 
 
@@ -26,24 +27,6 @@ def infer_transformer_n_layers(state_dict: dict) -> int | None:
         if len(parts) >= 2 and parts[1].isdigit():
             mx = max(mx, int(parts[1]))
     return (mx + 1) if mx >= 0 else None
-
-
-def find_latest_geom_checkpoint() -> Path | None:
-    if not RUNS.is_dir():
-        return None
-    candidates = list(RUNS.glob("*/best_geom_polar_transformer.pt"))
-    if not candidates:
-        return None
-    return max(candidates, key=lambda p: p.stat().st_mtime)
-
-
-def find_latest_polar_corr_checkpoint() -> Path | None:
-    if not RUNS.is_dir():
-        return None
-    candidates = list(RUNS.glob("*/best_polar_correction.pt"))
-    if not candidates:
-        return None
-    return max(candidates, key=lambda p: p.stat().st_mtime)
 
 
 def build_targets(polars: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -215,7 +198,7 @@ def main() -> None:
         if not geom_ckpt.is_file():
             geom_ckpt = _REPO / args.geom_checkpoint
     else:
-        geom_ckpt = find_latest_geom_checkpoint()
+        geom_ckpt = resolve_geom_polar_transformer()
     t_model: GeomPolarTransformer | None = None
     if geom_ckpt is not None and geom_ckpt.is_file():
         state = torch.load(geom_ckpt, map_location=device, weights_only=False)
@@ -236,7 +219,7 @@ def main() -> None:
         if not corr_ckpt.is_file():
             corr_ckpt = _REPO / args.corr_checkpoint
     else:
-        corr_ckpt = find_latest_polar_corr_checkpoint()
+        corr_ckpt = resolve_polar_correction()
     corr_model = PolarCorrectionMLP().to(device)
     if corr_ckpt is not None and corr_ckpt.is_file():
         state = torch.load(corr_ckpt, map_location=device, weights_only=False)

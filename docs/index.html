@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="FoilForm: compact geometry-to-polar models with validation metrics and full PDF." />
+  <title>FoilForm — Paper &amp; results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --bg2: #1a2332;
+      --paper: #f7f4ee;
+      --paper2: #ebe6dc;
+      --ink: #14181f;
+      --muted: #5c6578;
+      --accent: #c45c26;
+      --accent-dim: #8f4220;
+      --ok: #1d6b4a;
+      --rule: rgba(20, 24, 31, 0.12);
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      --radius: 10px;
+      --font-ui: "DM Sans", system-ui, sans-serif;
+      --font-serif: "Newsreader", Georgia, serif;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-ui);
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.5;
+    }
+
+    .skip {
+      position: absolute;
+      left: -9999px;
+      z-index: 9999;
+      padding: 0.5rem 1rem;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .skip:focus {
+      left: 1rem;
+      top: 1rem;
+    }
+
+    /* ——— Top bar ——— */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 0.65rem 1.25rem;
+      background: linear-gradient(180deg, rgba(15, 20, 25, 0.96) 0%, rgba(15, 20, 25, 0.88) 100%);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .brand {
+      font-weight: 600;
+      font-size: 1.05rem;
+      letter-spacing: -0.03em;
+      color: #e8e4dc;
+      text-decoration: none;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      display: inline-block;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: #a8b0c4;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    nav a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* ——— Hero ——— */
+    .hero {
+      position: relative;
+      padding: 2.5rem 1.25rem 3rem;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(196, 92, 38, 0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 50% at 85% 60%, rgba(45, 90, 120, 0.25) 0%, transparent 50%),
+        linear-gradient(165deg, var(--bg) 0%, var(--bg2) 100%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: clamp(2.1rem, 5.5vw, 3rem);
+      line-height: 1.08;
+      margin: 0 0 0.5rem;
+      color: #f2efe8;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-lead {
+      max-width: 38rem;
+      margin: 0 0 1.75rem;
+      font-size: 1.05rem;
+      color: #9aa3b5;
+    }
+
+    /* ——— Stats ——— */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .stat {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-2px);
+      border-color: rgba(196, 92, 38, 0.35);
+    }
+
+    .stat-value {
+      font-family: var(--font-serif);
+      font-size: 1.65rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-value small {
+      font-size: 0.55em;
+      font-weight: 400;
+      color: #8b95a8;
+    }
+
+    .stat-label {
+      margin-top: 0.35rem;
+      font-size: 0.75rem;
+      color: #7d8899;
+      line-height: 1.35;
+    }
+
+    /* ——— Main paper column ——— */
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 1.25rem 4rem;
+    }
+
+    .panel {
+      background: var(--paper);
+      border-radius: var(--radius);
+      border: 1px solid var(--rule);
+      box-shadow: var(--shadow);
+      padding: 1.75rem 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .panel h2 {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    .abstract-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent-dim);
+      margin: 0 0 0.6rem;
+    }
+
+    .abstract {
+      font-family: var(--font-serif);
+      font-size: 1.08rem;
+      line-height: 1.68;
+      margin: 0;
+      color: #252a33;
+    }
+
+    .abstract strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* ——— Table ——— */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.5rem 0 0;
+      border-radius: 8px;
+      border: 1px solid var(--rule);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th,
+    td {
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    th {
+      background: var(--paper2);
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td.num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+
+    .note {
+      margin-top: 0.85rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* ——— PDF viewer ——— */
+    .viewer-section h2 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .viewer-section h2::after {
+      content: "PDF";
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      background: var(--paper2);
+      color: var(--muted);
+    }
+
+    .viewer-wrap {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .viewer-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      padding: 0.65rem 1rem;
+      background: linear-gradient(180deg, #2f3540 0%, #252a33 100%);
+      border-bottom: 1px solid #1a1e24;
+    }
+
+    .viewer-hint {
+      font-size: 0.8rem;
+      color: #9aa3b5;
+      max-width: 22rem;
+      line-height: 1.4;
+    }
+
+    .viewer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #e8a060 0%, var(--accent) 100%);
+      color: #1a0f08;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.06);
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.08);
+      color: #c5cad6;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .pdf-frame {
+      display: block;
+      width: 100%;
+      height: min(82vh, 920px);
+      border: 0;
+      background: #3d4450;
+    }
+
+    @media (max-width: 640px) {
+      .pdf-frame {
+        height: 70vh;
+        min-height: 400px;
+      }
+
+      .panel {
+        padding: 1.25rem 1.15rem 1.5rem;
+      }
+    }
+
+    footer {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 1.25rem 3rem;
+      font-size: 0.82rem;
+      color: #6b7488;
+      text-align: center;
+    }
+
+    footer a {
+      color: #9aa3b5;
+    }
+
+    #to-top {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 200;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(26, 35, 50, 0.92);
+      color: #e8e4dc;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    #to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #to-top:hover {
+      background: rgba(40, 52, 72, 0.98);
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="brand" href="#">Foil<span>Form</span></a>
+    <nav aria-label="Page sections">
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#paper">Full paper</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero" id="overview" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <h1 id="hero-title">Geometry to polars, in tens of milliseconds</h1>
+      <p class="hero-lead">
+        A compact autoregressive transformer with pairwise blocks, plus a conv-based correction on raw contours—under <strong style="color:#e8e4dc">39k</strong> parameters total.
+      </p>
+      <div class="stats" role="list">
+        <div class="stat" role="listitem">
+          <div class="stat-value">≈38.8k</div>
+          <div class="stat-label">Total parameters (4,470 transformer + 34,290 correction MLP)</div>
+        </div>
+        <div class="stat" role="listitem">
+          <div class="stat-value">~0.3<small>&nbsp;ms</small></div>
+          <div class="stat-label">Inference per airfoil on CPU (batched pipeline)</div>
+        </div>
+        <div class="stat" role="listitem">
+          <div class="stat-value">0.0404</div>
+          <div class="stat-label">Val MAE <em>C<sub>l</sub></em> after correction (1,178 held-out foils)</div>
+        </div>
+        <div class="stat" role="listitem">
+          <div class="stat-value">0.0081</div>
+          <div class="stat-label">Val MAE <em>C<sub>d</sub></em> after correction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main id="main" class="wrap">
+    <article class="panel">
+      <p class="abstract-label">Abstract</p>
+      <p class="abstract">
+        We predict lift and drag (<strong>C<sub>l</sub></strong>, <strong>C<sub>d</sub></strong>) along angle-of-attack sweeps directly from airfoil contours.
+        The contour is tokenized into <strong>167</strong> non-overlapping triplets of <strong>501</strong> surface stations, embedded in <strong>8</strong>-D;
+        a causal <strong>four-layer</strong> transformer with pairwise outer-product blocks (<strong>4,470</strong> parameters) decodes the polar autoregressively with ground-truth AoA conditioning.
+        A residual <strong>34,290</strong>-parameter convolutional MLP then refines the polar using the full-resolution geometry.
+        On <strong>1,178</strong> validation airfoils (60% train split, seed <strong>42</strong>), the corrected model reaches mean absolute errors of <strong>0.0404</strong> on <em>C<sub>l</sub></em> and <strong>0.0081</strong> on <em>C<sub>d</sub></em>, with L/D error <strong>4.88</strong> vs. <strong>6.01</strong> for the transformer alone—roughly <strong>−46%</strong> relative improvement on <em>C<sub>l</sub></em>.
+        Compared to NeuralFoil (xxxlarge) on the same split, dataset-trained FoilForm attains roughly <strong>13×</strong> lower <em>C<sub>l</sub></em> MAE (<strong>0.0404</strong> vs. <strong>0.524</strong>) and about <strong>6×</strong> lower L/D MAE, at ~<strong>0.3</strong>&nbsp;ms vs. ~<strong>1.6</strong>&nbsp;ms per airfoil.
+      </p>
+    </article>
+
+    <section class="panel" id="results" aria-labelledby="results-heading">
+      <h2 id="results-heading">Validation metrics (paper &amp; README)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Model stage</th>
+              <th>MAE <em>C<sub>l</sub></em></th>
+              <th>MAE <em>C<sub>d</sub></em></th>
+              <th>MAE L/D</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Transformer alone</td>
+              <td class="num">0.0746</td>
+              <td class="num">0.0089</td>
+              <td class="num">6.01</td>
+            </tr>
+            <tr>
+              <td><strong>+ Correction MLP</strong></td>
+              <td class="num"><strong>0.0404</strong></td>
+              <td class="num"><strong>0.0081</strong></td>
+              <td class="num"><strong>4.88</strong></td>
+            </tr>
+            <tr>
+              <td>NeuralFoil (xxxlarge)</td>
+              <td class="num">0.524</td>
+              <td class="num">0.019</td>
+              <td class="num">29.93</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        Figures match the manuscript and repository README (validation split, <em>train_frac</em> = 0.6).
+        NeuralFoil is a general pretrained model; FoilForm is trained on this dataset—see the paper for discussion.
+      </p>
+    </section>
+
+    <section class="panel viewer-section" id="paper" aria-labelledby="pdf-heading">
+      <h2 id="pdf-heading">Full paper</h2>
+      <p class="note" style="margin-top:0;margin-bottom:1rem;">
+        Embedded below. Use your browser’s controls inside the frame (zoom, page, find). On some mobile browsers, opening in a new tab works best.
+      </p>
+      <div class="viewer-wrap">
+        <div class="viewer-toolbar">
+          <p class="viewer-hint">FoilForm.pdf — scroll inside the viewer, or open separately.</p>
+          <div class="viewer-actions">
+            <a class="btn btn-primary" href="FoilForm.pdf" target="_blank" rel="noopener">Open in new tab</a>
+            <a class="btn btn-ghost" href="FoilForm.pdf" download>Download</a>
+          </div>
+        </div>
+        <iframe
+          class="pdf-frame"
+          title="FoilForm paper PDF"
+          src="FoilForm.pdf#view=FitH"
+        ></iframe>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      FoilForm · Airfoil geometry ↔ polar prediction ·
+      <a href="https://github.com/AvnehSBhatia/FoilForm" target="_blank" rel="noopener">GitHub</a>
+    </p>
+  </footer>
+
+  <button type="button" id="to-top" aria-label="Back to top">↑</button>
+
+  <script>
+    (function () {
+      var btn = document.getElementById("to-top");
+      if (!btn) return;
+      function toggle() {
+        btn.classList.toggle("visible", window.scrollY > 400);
+      }
+      window.addEventListener("scroll", toggle, { passive: true });
+      toggle();
+      btn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    })();
+  </script>
+</body>
+</html>

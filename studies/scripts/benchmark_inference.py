@@ -19,6 +19,7 @@ sys.path.insert(0, str(_REPO / "src"))
 sys.path.insert(0, str(_STUDIES / "src"))
 
 from foilform.checkpoint_utils import load_geom_transformer  # noqa: E402
+from foilform.checkpoints import resolve_geom_polar_transformer  # noqa: E402
 from foilform.paths import DATA_PROCESSED, FIGURES  # noqa: E402
 
 
@@ -40,7 +41,12 @@ def build_targets(polars: np.ndarray):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--geom-checkpoint", type=str, required=True)
+    parser.add_argument(
+        "--geom-checkpoint",
+        type=str,
+        default="",
+        help="Path to best_geom_polar_transformer.pt (default: models/geom_polar_transformer.pt or latest runs/).",
+    )
     parser.add_argument("--airfoil-index", type=int, default=0)
     parser.add_argument("--warmup", type=int, default=5)
     parser.add_argument("--repeats", type=int, default=30)
@@ -49,9 +55,16 @@ def main() -> None:
     args = parser.parse_args()
 
     device = torch.device("cpu")
-    geom_ckpt = Path(args.geom_checkpoint)
-    if not geom_ckpt.is_file():
-        geom_ckpt = _REPO / args.geom_checkpoint
+    if args.geom_checkpoint:
+        geom_ckpt = Path(args.geom_checkpoint)
+        if not geom_ckpt.is_file():
+            geom_ckpt = _REPO / args.geom_checkpoint
+    else:
+        geom_ckpt = resolve_geom_polar_transformer()
+    if geom_ckpt is None or not geom_ckpt.is_file():
+        raise FileNotFoundError(
+            "No geom checkpoint: add models/geom_polar_transformer.pt or pass --geom-checkpoint."
+        )
     model = load_geom_transformer(geom_ckpt, device)
 
     polars = np.load(DATA_PROCESSED / "polars.npy").astype(np.float32)
